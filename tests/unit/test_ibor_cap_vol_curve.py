@@ -75,5 +75,7 @@ def test_fin_cap_vol_curve():
     assert round(cap_floor_vol * 100.0, 2) == 16.010
     assert round(cap_floor_let_vol * 100.0, 2) == 13.81
 
+    assert " 1.0027  1.0000    15.5000    15.5000" in repr(vol_curve)
+
 
 test_fin_cap_vol_curve()

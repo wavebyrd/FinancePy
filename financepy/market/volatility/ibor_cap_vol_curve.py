@@ -189,15 +189,14 @@ class IborCapVolCurve:
 
         s = label_to_string("OBJECT TYPE", type(self).__name__)
         num_times = len(self._times)
-        s += " TIME     TAU    CAP VOL    CAPLET VOL"
+        s += " TIME     TAU    CAP VOL    CAPLET VOL\n"
         for i in range(0, num_times):
             t = self._times[i]
             tau = self._taus[i]
             vol_cap = self._cap_sigmas[i]
             fwd_ibor_vol = self._caplet_vols[i]
-            s += label_to_string(
-                "%7.4f  %6.4f  %9.4f  %9.4f"
-                % (t, tau, vol_cap * 100.0, fwd_ibor_vol * 100.0)
+            s += "%7.4f  %6.4f  %9.4f  %9.4f\n" % (
+                t, tau, vol_cap * 100.0, fwd_ibor_vol * 100.0
             )
 
         return s
