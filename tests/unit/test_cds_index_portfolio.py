@@ -126,3 +126,46 @@ def test_cds_index_portfolio():
     assert round(intrinsic_spd_5yr, 3) == 35.538
     assert round(intrinsic_spd_7yr, 3) == 49.009
     assert round(intrinsic_spd_10yr, 3) == 61.409
+
+
+def test_cds_index_portfolio_spreads_use_curve_recovery():
+
+    # The par spread of a CDS on a curve calibrated from a quote at that CDS's
+    # maturity must reproduce the quote. When the curve is calibrated with a
+    # recovery rate other than the 40% par_spread default, the index portfolio
+    # spread statistics must still use the curve's own recovery rate.
+    trade_dt = Date(1, 8, 2007)
+    step_in_dt = trade_dt.add_days(1)
+    value_dt = step_in_dt
+
+    libor_curve = build_ibor_curve(trade_dt)
+    maturity_5yr = trade_dt.next_cds_date(60)
+
+    quote = 100.0 / 10000.0
+    recovery_rate = 0.30
+
+    cds_5yr = CDS(step_in_dt, maturity_5yr, quote)
+    issuer_curve = CDSCurve(
+        value_dt, [cds_5yr], libor_curve, recovery_rate
+    )
+    issuer_curves = [issuer_curve, issuer_curve, issuer_curve]
+
+    cds_index = CDSIndexPortfolio()
+
+    avg_spd = cds_index.average_spread(
+        value_dt, step_in_dt, maturity_5yr, issuer_curves
+    )
+    total_spd = cds_index.total_spread(
+        value_dt, step_in_dt, maturity_5yr, issuer_curves
+    )
+    min_spd = cds_index.min_spread(
+        value_dt, step_in_dt, maturity_5yr, issuer_curves
+    )
+    max_spd = cds_index.max_spread(
+        value_dt, step_in_dt, maturity_5yr, issuer_curves
+    )
+
+    assert round(avg_spd * 10000.0, 4) == 100.0
+    assert round(total_spd * 10000.0, 4) == 300.0
+    assert round(min_spd * 10000.0, 4) == 100.0
+    assert round(max_spd * 10000.0, 4) == 100.0

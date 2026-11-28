@@ -121,7 +121,7 @@ class CDSIndexPortfolio:
         average_spd = 0.0
 
         for m in range(0, num_credits):
-            spd = cds_contract.par_spread(value_dt, issuer_curves[m])
+            spd = cds_contract.par_spread(value_dt, issuer_curves[m], issuer_curves[m].recovery_rate)
             average_spd += spd
 
         average_spd /= num_credits
@@ -142,7 +142,7 @@ class CDSIndexPortfolio:
         total_spd = 0.0
 
         for m in range(0, num_credits):
-            spd = cds_contract.par_spread(value_dt, issuer_curves[m])
+            spd = cds_contract.par_spread(value_dt, issuer_curves[m], issuer_curves[m].recovery_rate)
             total_spd += spd
 
         return total_spd
@@ -162,10 +162,10 @@ class CDSIndexPortfolio:
 
         cds_contract = CDS(step_in_dt, maturity_dt, 0.0)
 
-        min_spd = cds_contract.par_spread(value_dt, issuer_curves[0])
+        min_spd = cds_contract.par_spread(value_dt, issuer_curves[0], issuer_curves[0].recovery_rate)
 
         for m in range(1, num_credits):
-            spd = cds_contract.par_spread(value_dt, issuer_curves[m])
+            spd = cds_contract.par_spread(value_dt, issuer_curves[m], issuer_curves[m].recovery_rate)
             if spd < min_spd:
                 min_spd = spd
 
@@ -186,10 +186,10 @@ class CDSIndexPortfolio:
 
         cds_contract = CDS(step_in_dt, maturity_dt, 0.0)
 
-        max_spd = cds_contract.par_spread(value_dt, issuer_curves[0])
+        max_spd = cds_contract.par_spread(value_dt, issuer_curves[0], issuer_curves[0].recovery_rate)
 
         for m in range(1, num_credits):
-            spd = cds_contract.par_spread(value_dt, issuer_curves[m])
+            spd = cds_contract.par_spread(value_dt, issuer_curves[m], issuer_curves[m].recovery_rate)
             if spd > max_spd:
                 max_spd = spd
 
